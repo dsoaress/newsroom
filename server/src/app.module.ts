@@ -8,6 +8,7 @@ import { ImagesModule } from './api/images/images.module'
 import { NewsModule } from './api/news/news.module'
 import { SessionsModule } from './api/sessions/sessions.module'
 import { UsersModule } from './api/users/users.module'
+import { PrismaService } from './shared/services/prisma.service'
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UsersModule } from './api/users/users.module'
     NewsModule,
     ImagesModule,
     SessionsModule
-  ]
+  ],
+  providers: [PrismaService]
 })
 export class AppModule {}
