@@ -1,6 +1,7 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql'
 
 import { Category } from '../../categories/entities/category.entity'
+import { Image } from '../../images/entities/image.entity'
 
 @ObjectType()
 export class News {
@@ -13,8 +14,8 @@ export class News {
   @Field(() => String)
   description: string
 
-  @Field(() => String, { nullable: true })
-  image?: string
+  @Field(() => Image, { nullable: true })
+  image?: Image
 
   @Field(() => String)
   slug: string

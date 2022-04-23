@@ -8,14 +8,16 @@ import { UpdateCategoryInput } from './dto/update-category.input'
 export class CategoriesService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(createCategoryInput: CreateCategoryInput) {
-    const slugExists = await this.prismaService.category.findUnique({
-      where: { slug: createCategoryInput.slug }
+  async create({ description, name, slug }: CreateCategoryInput) {
+    await this.slugExists(slug)
+
+    return await this.prismaService.category.create({
+      data: {
+        name,
+        description,
+        slug
+      }
     })
-
-    if (slugExists) throw new BadRequestException(`Slug ${createCategoryInput.slug} already exists`)
-
-    return await this.prismaService.category.create({ data: createCategoryInput })
   }
 
   async findAll() {
@@ -30,12 +32,17 @@ export class CategoriesService {
     return category
   }
 
-  async update(id: string, updateCategoryInput: UpdateCategoryInput) {
-    await this.findOne(id)
+  async update(id: string, { description, name, slug }: UpdateCategoryInput) {
+    const category = await this.findOne(id)
+    if (slug) await this.slugExists(slug)
 
     return await this.prismaService.category.update({
       where: { id },
-      data: updateCategoryInput
+      data: {
+        name: name || category.name,
+        description: description || category.description,
+        slug: slug || category.slug
+      }
     })
   }
 
@@ -43,5 +50,13 @@ export class CategoriesService {
     await this.findOne(id)
 
     return await this.prismaService.category.delete({ where: { id } })
+  }
+
+  private async slugExists(slug: string) {
+    const slugExists = await this.prismaService.category.findUnique({
+      where: { slug }
+    })
+
+    if (slugExists) throw new BadRequestException(`Slug ${slug} already exists`)
   }
 }

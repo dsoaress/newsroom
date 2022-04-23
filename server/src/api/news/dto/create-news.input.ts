@@ -16,7 +16,7 @@ export class CreateNewsInput {
   @IsString()
   @IsOptional()
   @Field(() => String, { nullable: true })
-  image?: string
+  imageId?: string
 
   @IsNotEmpty()
   @IsLowercase()
