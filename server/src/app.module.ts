@@ -14,7 +14,8 @@ import { PrismaService } from './shared/services/prisma.service'
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql')
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      bodyParserConfig: false
     }),
     CategoriesModule,
     UsersModule,

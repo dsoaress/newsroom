@@ -14,13 +14,13 @@ export class NewsResolver {
     return this.newsService.create(createNewsInput)
   }
 
-  @Query(() => [News], { name: 'news' })
+  @Query(() => [News], { name: 'allNews' })
   findAll() {
     return this.newsService.findAll()
   }
 
   @Query(() => News, { name: 'news' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id', { type: () => String }) id: string) {
     return this.newsService.findOne(id)
   }
 
@@ -30,7 +30,7 @@ export class NewsResolver {
   }
 
   @Mutation(() => News)
-  removeNews(@Args('id', { type: () => Int }) id: number) {
+  removeNews(@Args('id', { type: () => String }) id: string) {
     return this.newsService.remove(id)
   }
 }
