@@ -1,27 +1,65 @@
-import { Injectable } from '@nestjs/common'
+import { BadGatewayException, Injectable, NotFoundException } from '@nestjs/common'
+import { UploadClient } from '@uploadcare/upload-client'
 import { FileUpload } from 'graphql-upload'
 
-import { UpdateImageInput } from './dto/update-image.input'
+import { PrismaService } from '../../shared/services/prisma.service'
 
 @Injectable()
 export class ImagesService {
-  create({ createReadStream, filename }: FileUpload) {
-    return 'This action adds a new image'
+  constructor(private readonly prismaService: PrismaService) {}
+
+  private uploadCareClient = new UploadClient({ publicKey: '042ec6fae3feba612eb3' })
+
+  async create({ createReadStream, filename, mimetype }: FileUpload) {
+    const stream = createReadStream()
+    const chunks = []
+
+    try {
+      const buffer = await new Promise<Buffer>((resolve, reject) => {
+        let buffer: Buffer
+
+        stream.on('data', chunk => {
+          chunks.push(chunk)
+        })
+
+        stream.on('end', () => {
+          buffer = Buffer.concat(chunks)
+          resolve(buffer)
+        })
+
+        stream.on('error', reject)
+      })
+
+      const { cdnUrl: url } = await this.uploadCareClient.uploadFile(buffer, {
+        fileName: filename,
+        contentType: mimetype
+      })
+
+      if (!url) throw new BadGatewayException('Upload to uploadcare failed')
+
+      return await this.prismaService.image.create({
+        data: { url }
+      })
+    } catch (error) {
+      throw new BadGatewayException(error)
+    }
   }
 
-  findAll() {
-    return `This action returns all images`
+  async findAll() {
+    return await this.prismaService.image.findMany()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} image`
+  async findOne(id: string) {
+    const image = await this.prismaService.image.findUnique({ where: { id } })
+
+    if (!image) throw new NotFoundException(`Image with id ${id} not found`)
+
+    return image
   }
 
-  update(id: number, updateImageInput: UpdateImageInput) {
-    return `This action updates a #${id} image`
-  }
+  async remove(id: string) {
+    await this.findOne(id)
 
-  remove(id: number) {
-    return `This action removes a #${id} image`
+    return await this.prismaService.image.delete({ where: { id } })
   }
 }

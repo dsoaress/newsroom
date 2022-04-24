@@ -25,7 +25,6 @@ type Image {
   url: String!
   news: [News!]!
   createdAt: DateTime!
-  updatedAt: DateTime!
 }
 
 type Category {
@@ -62,7 +61,7 @@ type Query {
   allNews: [News!]!
   news(id: String!): News!
   images: [Image!]!
-  image(id: Int!): Image!
+  image(id: String!): Image!
 }
 
 type Mutation {
@@ -76,8 +75,7 @@ type Mutation {
   updateNews(updateNewsInput: UpdateNewsInput!): News!
   removeNews(id: String!): News!
   createImage(file: Upload!): Image!
-  updateImage(updateImageInput: UpdateImageInput!): Image!
-  removeImage(id: Int!): Image!
+  removeImage(id: String!): Image!
   createSession(createSessionInput: CreateSessionInput!): Session!
   updateSession(refreshToken: String!): Session!
 }
@@ -133,12 +131,6 @@ input UpdateNewsInput {
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
-
-input UpdateImageInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
-}
 
 input CreateSessionInput {
   email: String!

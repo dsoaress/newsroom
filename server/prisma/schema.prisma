@@ -65,7 +65,6 @@ model Image {
   url       String
   news      News?
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("images")
 }

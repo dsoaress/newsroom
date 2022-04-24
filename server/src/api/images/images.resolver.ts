@@ -1,8 +1,6 @@
-import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { FileUpload, GraphQLUpload } from 'graphql-upload'
 
-import { CreateImageInput } from './dto/create-image.input'
-import { UpdateImageInput } from './dto/update-image.input'
 import { Image } from './entities/image.entity'
 import { ImagesService } from './images.service'
 
@@ -24,17 +22,12 @@ export class ImagesResolver {
   }
 
   @Query(() => Image, { name: 'image' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id', { type: () => String }) id: string) {
     return this.imagesService.findOne(id)
   }
 
   @Mutation(() => Image)
-  updateImage(@Args('updateImageInput') updateImageInput: UpdateImageInput) {
-    return this.imagesService.update(updateImageInput.id, updateImageInput)
-  }
-
-  @Mutation(() => Image)
-  removeImage(@Args('id', { type: () => Int }) id: number) {
+  removeImage(@Args('id', { type: () => String }) id: string) {
     return this.imagesService.remove(id)
   }
 }
