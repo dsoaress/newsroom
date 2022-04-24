@@ -1,11 +1,3 @@
-import type { NextPage } from 'next'
-
-const Home: NextPage = () => {
-  return (
-    <div>
-      <h1>Hello</h1>
-    </div>
-  )
-}
+import { Home } from '../containers/Home'
 
 export default Home
