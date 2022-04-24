@@ -39,17 +39,19 @@ type Category {
   updatedAt: DateTime!
 }
 
-type Session {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
 type User {
   id: ID!
   name: String!
   email: String!
+  role: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+type Session {
+  user: User!
+  accessToken: String!
+  refreshToken: String!
 }
 
 type Query {
@@ -61,8 +63,6 @@ type Query {
   news(id: String!): News!
   images: [Image!]!
   image(id: Int!): Image!
-  sessions: [Session!]!
-  session(id: Int!): Session!
 }
 
 type Mutation {
@@ -75,12 +75,11 @@ type Mutation {
   createNews(createNewsInput: CreateNewsInput!): News!
   updateNews(updateNewsInput: UpdateNewsInput!): News!
   removeNews(id: String!): News!
-  createImage(createImageInput: CreateImageInput!): Image!
+  createImage(file: Upload!): Image!
   updateImage(updateImageInput: UpdateImageInput!): Image!
   removeImage(id: Int!): Image!
   createSession(createSessionInput: CreateSessionInput!): Session!
-  updateSession(updateSessionInput: UpdateSessionInput!): Session!
-  removeSession(id: Int!): Session!
+  updateSession(refreshToken: String!): Session!
 }
 
 input CreateCategoryInput {
@@ -100,12 +99,14 @@ input CreateUserInput {
   name: String!
   email: String!
   password: String!
+  role: String
 }
 
 input UpdateUserInput {
   name: String
   email: String
   password: String
+  role: String
   id: ID!
 }
 
@@ -130,10 +131,8 @@ input UpdateNewsInput {
   id: ID!
 }
 
-input CreateImageInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 input UpdateImageInput {
   """Example field (placeholder)"""
@@ -142,12 +141,6 @@ input UpdateImageInput {
 }
 
 input CreateSessionInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
-input UpdateSessionInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  email: String!
+  password: String!
 }

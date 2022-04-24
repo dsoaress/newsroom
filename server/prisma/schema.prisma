@@ -13,6 +13,7 @@ model User {
   email     String    @unique
   password  String
   sessions  Session[]
+  role      Role      @default(value: EDITOR)
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
 
@@ -67,4 +68,9 @@ model Image {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("images")
+}
+
+enum Role {
+  ADMIN
+  EDITOR
 }

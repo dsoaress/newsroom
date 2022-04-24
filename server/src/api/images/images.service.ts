@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common'
+import { FileUpload } from 'graphql-upload'
 
-import { CreateImageInput } from './dto/create-image.input'
 import { UpdateImageInput } from './dto/update-image.input'
 
 @Injectable()
 export class ImagesService {
-  create(createImageInput: CreateImageInput) {
+  create({ createReadStream, filename }: FileUpload) {
     return 'This action adds a new image'
   }
 

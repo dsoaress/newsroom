@@ -1,4 +1,5 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { FileUpload, GraphQLUpload } from 'graphql-upload'
 
 import { CreateImageInput } from './dto/create-image.input'
 import { UpdateImageInput } from './dto/update-image.input'
@@ -10,8 +11,11 @@ export class ImagesResolver {
   constructor(private readonly imagesService: ImagesService) {}
 
   @Mutation(() => Image)
-  createImage(@Args('createImageInput') createImageInput: CreateImageInput) {
-    return this.imagesService.create(createImageInput)
+  createImage(
+    @Args('file', { type: () => GraphQLUpload })
+    file: FileUpload
+  ) {
+    return this.imagesService.create(file)
   }
 
   @Query(() => [Image], { name: 'images' })

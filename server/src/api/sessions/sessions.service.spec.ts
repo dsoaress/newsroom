@@ -1,5 +1,8 @@
+import { JwtModule } from '@nestjs/jwt'
 import { Test, TestingModule } from '@nestjs/testing'
 
+import { PrismaService } from '../../shared/services/prisma.service'
+import { UsersService } from '../users/users.service'
 import { SessionsService } from './sessions.service'
 
 describe('SessionsService', () => {
@@ -7,7 +10,13 @@ describe('SessionsService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SessionsService]
+      imports: [
+        JwtModule.register({
+          secret: 'secret',
+          signOptions: { expiresIn: '15m' }
+        })
+      ],
+      providers: [SessionsService, UsersService, PrismaService]
     }).compile()
 
     service = module.get<SessionsService>(SessionsService)

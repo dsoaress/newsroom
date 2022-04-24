@@ -1,5 +1,6 @@
 import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
+import { graphqlUploadExpress } from 'graphql-upload'
 
 import { AppModule } from './app.module'
 import { PrismaService } from './shared/services/prisma.service'
@@ -12,6 +13,7 @@ async function bootstrap() {
   const prismaService = app.get(PrismaService)
   await prismaService.enableShutdownHooks(app)
 
+  app.use(graphqlUploadExpress({ maxFileSize: 1000000, maxFiles: 10 }))
   app.useGlobalPipes(
     new ValidationPipe({
       disableErrorMessages: false,
