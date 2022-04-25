@@ -2,6 +2,18 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Image {
+  id: ID!
+  url: String!
+  blurDataUrl: String!
+  createdAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type News {
   id: ID!
   title: String!
@@ -10,21 +22,10 @@ type News {
   slug: String!
   category: Category!
   date: DateTime!
+  published: Boolean!
   body: String!
   createdAt: DateTime!
   updatedAt: DateTime!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type Image {
-  id: ID!
-  url: String!
-  news: [News!]!
-  createdAt: DateTime!
 }
 
 type Category {
@@ -58,8 +59,8 @@ type Query {
   category(id: String!): Category!
   users: [User!]!
   user(id: String!): User
-  allNews: [News!]!
-  news(id: String!): News!
+  allNews(preview: Boolean): [News!]!
+  news(id: String!, preview: Boolean): News!
   images: [Image!]!
   image(id: String!): Image!
 }
@@ -115,6 +116,7 @@ input CreateNewsInput {
   slug: String!
   categoryId: String!
   date: DateTime!
+  published: Boolean
   body: String!
 }
 
@@ -125,6 +127,7 @@ input UpdateNewsInput {
   slug: String
   categoryId: String
   date: DateTime
+  published: Boolean
   body: String
   id: ID!
 }

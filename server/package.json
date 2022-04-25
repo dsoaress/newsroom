@@ -35,9 +35,11 @@
     "graphql-upload": "13.0.0",
     "passport": "0.5.2",
     "passport-jwt": "4.0.0",
+    "plaiceholder": "^2.3.0",
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",
-    "rxjs": "7.5.5"
+    "rxjs": "7.5.5",
+    "sharp": "^0.30.4"
   },
   "devDependencies": {
     "@nestjs/cli": "8.2.5",

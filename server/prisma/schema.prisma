@@ -47,12 +47,13 @@ model News {
   id          String   @id @default(cuid())
   title       String
   description String
-  imageId     String?  @map("image_id")
+  imageId     String?  @map("image_id")@unique
   image       Image?   @relation(fields: [imageId], references: [id], onDelete: SetNull)
   slug        String   @unique
   categoryId  String   @map("category_id")
   category    Category @relation(fields: [categoryId], references: [id])
   date        DateTime
+  published   Boolean  @default(value: false)
   body        String
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
@@ -61,10 +62,11 @@ model News {
 }
 
 model Image {
-  id        String   @id @default(cuid())
-  url       String
-  news      News?
-  createdAt DateTime @default(now()) @map("created_at")
+  id          String   @id @default(cuid())
+  url         String
+  blurDataUrl String   @map("blur_data_url")
+  news        News?
+  createdAt   DateTime @default(now()) @map("created_at")
 
   @@map("images")
 }

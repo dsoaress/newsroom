@@ -33,9 +33,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       ctx.getClass()
     ])
 
-    if (isPublic) return true
-
     const authHeader = req.headers.authorization as string
+
+    if (isPublic && !authHeader) return true
 
     if (!authHeader) {
       throw new BadRequestException('Authorization header not found.')

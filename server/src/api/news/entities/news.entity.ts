@@ -26,6 +26,9 @@ export class News {
   @Field(() => Date)
   date: Date
 
+  @Field(() => Boolean)
+  published: boolean
+
   @Field(() => String)
   body: string
 

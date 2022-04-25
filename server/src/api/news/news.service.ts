@@ -15,7 +15,16 @@ export class NewsService {
     private readonly imagesService: ImagesService
   ) {}
 
-  async create({ body, categoryId, date, description, slug, title, imageId }: CreateNewsInput) {
+  async create({
+    body,
+    categoryId,
+    date,
+    description,
+    slug,
+    title,
+    imageId,
+    published
+  }: CreateNewsInput) {
     await this.slugExists(slug)
     await this.categoriesService.findOne(categoryId)
 
@@ -25,6 +34,7 @@ export class NewsService {
         description,
         slug,
         date,
+        published,
         body,
         category: { connect: { id: categoryId } },
         ...(imageId && { image: { connect: { id: imageId } } })
@@ -33,13 +43,41 @@ export class NewsService {
     })
   }
 
-  async findAll() {
+  async findAll({ userId, preview = false }: { userId?: string; preview?: boolean }) {
     return await this.prismaService.news.findMany({
+      where: {
+        published: userId ? !preview : true
+      },
       include: { category: true, image: true }
     })
   }
 
-  async findOne(id: string) {
+  async findOne({
+    id,
+    userId,
+    preview = false
+  }: {
+    id: string
+    userId?: string
+    preview?: boolean
+  }) {
+    const news = await this.prismaService.news.findUnique({
+      where: { id },
+      include: { category: true, image: true }
+    })
+
+    if (!news) throw new NotFoundException(`News with id ${id} not found`)
+    if ((!userId || !preview) && !news.published) {
+      throw new NotFoundException(`News with id ${id} not found`)
+    }
+
+    return news
+  }
+
+  async update(
+    id: string,
+    { body, categoryId, date, description, imageId, slug, title, published }: UpdateNewsInput
+  ) {
     const news = await this.prismaService.news.findUnique({
       where: { id },
       include: { category: true, image: true }
@@ -47,14 +85,6 @@ export class NewsService {
 
     if (!news) throw new NotFoundException(`News with id ${id} not found`)
 
-    return news
-  }
-
-  async update(
-    id: string,
-    { body, categoryId, date, description, imageId, slug, title }: UpdateNewsInput
-  ) {
-    const news = await this.findOne(id)
     if (slug) await this.slugExists(slug)
     if (categoryId) await this.categoriesService.findOne(categoryId)
 
@@ -65,6 +95,7 @@ export class NewsService {
         description: description || news.description,
         slug: slug || news.slug,
         date: date || news.date,
+        published: published || news.published,
         body: body || news.body,
         ...(categoryId && { category: { connect: { id: categoryId } } }),
         ...(imageId && { image: { connect: { id: imageId } } })
@@ -74,7 +105,12 @@ export class NewsService {
   }
 
   async remove(id: string) {
-    await this.findOne(id)
+    const news = await this.prismaService.news.findUnique({
+      where: { id },
+      include: { category: true, image: true }
+    })
+
+    if (!news) throw new NotFoundException(`News with id ${id} not found`)
 
     return await this.prismaService.news.delete({
       where: { id },

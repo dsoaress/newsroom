@@ -1,6 +1,7 @@
 import { BadGatewayException, Injectable, NotFoundException } from '@nestjs/common'
 import { UploadClient } from '@uploadcare/upload-client'
 import { FileUpload } from 'graphql-upload'
+import { getPlaiceholder } from 'plaiceholder'
 
 import { PrismaService } from '../../shared/services/prisma.service'
 
@@ -30,6 +31,7 @@ export class ImagesService {
         stream.on('error', reject)
       })
 
+      const { base64: blurDataUrl } = await getPlaiceholder(buffer, { size: 10 })
       const { cdnUrl: url } = await this.uploadCareClient.uploadFile(buffer, {
         fileName: filename,
         contentType: mimetype
@@ -38,7 +40,7 @@ export class ImagesService {
       if (!url) throw new BadGatewayException('Upload to uploadcare failed')
 
       return await this.prismaService.image.create({
-        data: { url }
+        data: { url, blurDataUrl }
       })
     } catch (error) {
       throw new BadGatewayException(error)

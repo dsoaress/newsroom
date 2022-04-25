@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql'
-import { IsDate, IsLowercase, IsNotEmpty, IsOptional, IsString } from 'class-validator'
+import { IsBoolean, IsDate, IsLowercase, IsNotEmpty, IsOptional, IsString } from 'class-validator'
 
 @InputType()
 export class CreateNewsInput {
@@ -32,6 +32,11 @@ export class CreateNewsInput {
   @IsNotEmpty()
   @Field(() => Date)
   date: Date
+
+  @IsBoolean()
+  @IsOptional()
+  @Field(() => Boolean, { nullable: true })
+  published?: boolean
 
   @IsString()
   @IsNotEmpty()

@@ -1,5 +1,8 @@
-import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 
+import { CurrentUser } from '../../shared/decorators/current-user.decorator'
+import { Public } from '../../shared/decorators/public-route.decorator'
+import { User } from '../users/entities/user.entity'
 import { CreateNewsInput } from './dto/create-news.input'
 import { UpdateNewsInput } from './dto/update-news.input'
 import { News } from './entities/news.entity'
@@ -14,14 +17,23 @@ export class NewsResolver {
     return this.newsService.create(createNewsInput)
   }
 
+  @Public()
   @Query(() => [News], { name: 'allNews' })
-  findAll() {
-    return this.newsService.findAll()
+  findAll(
+    @Args('preview', { type: () => Boolean, nullable: true }) preview?: boolean,
+    @CurrentUser() currentUser?: User
+  ) {
+    return this.newsService.findAll({ userId: currentUser?.id, preview })
   }
 
+  @Public()
   @Query(() => News, { name: 'news' })
-  findOne(@Args('id', { type: () => String }) id: string) {
-    return this.newsService.findOne(id)
+  findOne(
+    @Args('id', { type: () => String }) id: string,
+    @Args('preview', { type: () => Boolean, nullable: true }) preview?: boolean,
+    @CurrentUser() currentUser?: User
+  ) {
+    return this.newsService.findOne({ id, userId: currentUser?.id, preview })
   }
 
   @Mutation(() => News)

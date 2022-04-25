@@ -1,7 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql'
 
-import { News } from '../../news/entities/news.entity'
-
 @ObjectType()
 export class Image {
   @Field(() => ID)
@@ -10,8 +8,8 @@ export class Image {
   @Field(() => String)
   url: string
 
-  @Field(() => [News])
-  news: News[]
+  @Field(() => String)
+  blurDataUrl: string
 
   @Field(() => Date)
   createdAt: Date
