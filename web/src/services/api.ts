@@ -1,33 +1,16 @@
-import type { AxiosError, AxiosRequestConfig } from 'axios'
+import type { AxiosError } from 'axios'
 import axios from 'axios'
-import type { DocumentNode } from 'graphql'
-import gql from 'graphql-tag'
-import type { NextPageContext } from 'next'
+import type { NextPageContext, PreviewData } from 'next'
 import nookies from 'nookies'
 
 let isRefreshing = false
 let failedRequestsQueued: any[] = []
 
 const endpoint = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3010/graphql'
+const gql = String.raw
 
 function setupAPIClient(ctx?: NextPageContext) {
-  const { accessToken } = nookies.get(ctx)
-
-  const api = axios.create({
-    headers: { Authorization: accessToken ? `Bearer ${accessToken}` : '' }
-  })
-
-  api.interceptors.request.use((config: AxiosRequestConfig) => {
-    const { accessToken } = nookies.get(ctx)
-
-    if (config.headers) {
-      config.headers['Authorization'] = accessToken ? `Bearer ${accessToken}` : ''
-    }
-
-    return config
-  })
-
-  api.interceptors.response.use(
+  axios.interceptors.response.use(
     response => response,
     error => {
       const { refreshToken } = nookies.get(ctx)
@@ -38,7 +21,7 @@ function setupAPIClient(ctx?: NextPageContext) {
         if (!isRefreshing) {
           isRefreshing = true
 
-          api
+          axios
             .post<{
               refreshToken: string
               accessToken: string
@@ -83,7 +66,7 @@ function setupAPIClient(ctx?: NextPageContext) {
         return new Promise((resolve, reject) => {
           failedRequestsQueued.push({
             onSuccess: (newAccessToken: string) => {
-              originalConfig.headers['Authorization'] = `Bearer ${newAccessToken}`
+              originalConfig.headers.authorization = `Bearer ${newAccessToken}`
               resolve(api(originalConfig))
             },
             onFailure: (error: AxiosError) => reject(error)
@@ -95,26 +78,33 @@ function setupAPIClient(ctx?: NextPageContext) {
     }
   )
 
-  return api
+  return axios
 }
 
-async function api<T>({
-  query,
-  variables,
-  ctx
-}: {
-  query: DocumentNode
-  variables?: { [key: string]: string | number | boolean | undefined }
+type Api = {
+  query: string
+  variables?: { [key: string]: string | number | boolean }
+  preview?: boolean
+  previewToken?: PreviewData
   ctx?: NextPageContext
-}): Promise<T> {
-  const api = setupAPIClient(ctx)
+}
 
-  const { data } = await api.post<{ data: T }>(endpoint, {
+async function api<T>({ query, variables, preview, previewToken, ctx }: Api) {
+  const apiClient = setupAPIClient(ctx)
+  const { accessToken } = nookies.get(ctx)
+
+  const { data } = await apiClient.post<{ data: T }>(endpoint, {
     query,
-    variables
+    variables,
+    config: {
+      headers: {
+        authorization: accessToken ? `Bearer ${accessToken}` : '',
+        preview: preview && previewToken ? previewToken : ''
+      }
+    }
   })
 
   return data.data
 }
 
-export { api, gql, setupAPIClient }
+export { api, gql }

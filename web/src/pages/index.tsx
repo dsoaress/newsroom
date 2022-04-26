@@ -1,14 +1,44 @@
 import type { GetStaticProps } from 'next'
 
-import type { AllNews } from '../containers/Home'
-import { Home } from '../containers/Home'
 import { api, gql } from '../services/api'
 
-export const getStaticProps: GetStaticProps = async ctx => {
+type AllNews = {
+  allNews: {
+    id: string
+    title: string
+    image: {
+      url: string
+    } | null
+    slug: string
+    category: {
+      name: string
+    }
+    date: string
+    published: boolean
+  }[]
+}
+
+type HomeProps = {
+  allNews: AllNews
+  preview: boolean
+}
+
+export default function Home({ allNews, preview }: HomeProps) {
+  console.log(allNews)
+  console.log(preview)
+
+  return (
+    <div>
+      <h1>Hello</h1>
+    </div>
+  )
+}
+
+export const getStaticProps: GetStaticProps = async ({ preview, previewData: previewToken }) => {
   const { allNews } = await api<AllNews>({
     query: gql`
-      query ($preview: Boolean) {
-        allNews(preview: $preview) {
+      query {
+        allNews {
           id
           title
           image {
@@ -23,15 +53,12 @@ export const getStaticProps: GetStaticProps = async ctx => {
         }
       }
     `,
-    variables: {
-      preview: ctx.preview || false
-    }
+    preview,
+    previewToken
   })
 
   return {
-    props: { allNews },
+    props: { allNews, preview: !!preview },
     revalidate: 1
   }
 }
-
-export default Home

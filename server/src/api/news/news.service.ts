@@ -43,31 +43,23 @@ export class NewsService {
     })
   }
 
-  async findAll({ userId, preview = false }: { userId?: string; preview?: boolean }) {
+  async findAll(previewMode?: boolean) {
     return await this.prismaService.news.findMany({
       where: {
-        published: userId ? !preview : true
+        published: !previewMode
       },
       include: { category: true, image: true }
     })
   }
 
-  async findOne({
-    id,
-    userId,
-    preview = false
-  }: {
-    id: string
-    userId?: string
-    preview?: boolean
-  }) {
+  async findOne({ id, previewMode = false }: { id: string; previewMode?: boolean }) {
     const news = await this.prismaService.news.findUnique({
       where: { id },
       include: { category: true, image: true }
     })
 
     if (!news) throw new NotFoundException(`News with id ${id} not found`)
-    if ((!userId || !preview) && !news.published) {
+    if (!previewMode && !news.published) {
       throw new NotFoundException(`News with id ${id} not found`)
     }
 

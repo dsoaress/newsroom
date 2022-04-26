@@ -34,6 +34,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     ])
 
     const authHeader = req.headers.authorization as string
+    const previewModeToken = req.headers.preview as string
+
+    req.preview = this.sessionService.isPreviewMode(previewModeToken)
 
     if (isPublic && !authHeader) return true
 

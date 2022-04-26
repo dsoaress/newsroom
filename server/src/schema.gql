@@ -59,8 +59,8 @@ type Query {
   category(id: String!): Category!
   users: [User!]!
   user(id: String!): User
-  allNews(preview: Boolean): [News!]!
-  news(id: String!, preview: Boolean): News!
+  allNews: [News!]!
+  news(id: String!): News!
   images: [Image!]!
   image(id: String!): Image!
 }

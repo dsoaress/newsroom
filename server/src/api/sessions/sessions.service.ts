@@ -1,4 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import { compareSync } from 'bcrypt'
 import dayjs from 'dayjs'
@@ -13,7 +14,8 @@ export class SessionsService {
   constructor(
     private readonly usersService: UsersService,
     private readonly prismaService: PrismaService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService
   ) {}
 
   async validateUser({ email, password }: CreateSessionInput) {
@@ -59,6 +61,16 @@ export class SessionsService {
 
     if (!user) return { isValid: false }
     return { user, isValid: true }
+  }
+
+  isPreviewMode(tokenToCompare?: string) {
+    const previewModeToken = this.configService.get('PREVIEW_MODE_TOKEN')
+
+    if (!previewModeToken || !tokenToCompare || tokenToCompare !== previewModeToken) {
+      return false
+    }
+
+    return true
   }
 
   private async createSession(user: User) {

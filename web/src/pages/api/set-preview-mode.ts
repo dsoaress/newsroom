@@ -1,11 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import nookies from 'nookies'
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const { PREVIEW_MODE_TOKEN } = process.env
-  const { accessToken } = nookies.get({ req })
 
-  if (!PREVIEW_MODE_TOKEN || !accessToken) {
+  if (!PREVIEW_MODE_TOKEN) {
     return res.status(401).json({ error: 'Preview mode not enabled' })
   }
 
@@ -13,6 +11,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(401).json({ error: 'Invalid token' })
   }
 
-  res.setPreviewData({})
+  res.setPreviewData(PREVIEW_MODE_TOKEN, {
+    maxAge: 60 * 60 // 1 hour
+  })
+
   res.redirect('/')
 }

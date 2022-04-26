@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query'
 
-import { api, gql } from '../../../services/api'
+import { api, gql } from '../services/api'
 
 type Category = {
   id: string
