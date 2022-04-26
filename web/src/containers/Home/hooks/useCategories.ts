@@ -12,18 +12,20 @@ type Category = {
 }
 
 async function getCategories() {
-  const { categories } = await api<{ categories: Category[] }>(gql`
-    query {
-      categories {
-        id
-        name
-        description
-        slug
-        createdAt
-        updatedAt
+  const { categories } = await api<{ categories: Category[] }>({
+    query: gql`
+      query {
+        categories {
+          id
+          name
+          description
+          slug
+          createdAt
+          updatedAt
+        }
       }
-    }
-  `)
+    `
+  })
 
   return categories
 }

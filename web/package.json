@@ -11,13 +11,12 @@
     "lint": "next lint --fix"
   },
   "dependencies": {
-    "@chakra-ui/react": "1.8.8",
-    "@emotion/react": "11.9.0",
-    "@emotion/styled": "11.8.1",
+    "axios": "^0.27.1",
     "framer-motion": "6.3.1",
     "graphql": "16.3.0",
-    "graphql-request": "4.2.0",
+    "graphql-tag": "^2.12.6",
     "next": "12.1.5",
+    "nookies": "^2.5.2",
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-query": "3.38.0"

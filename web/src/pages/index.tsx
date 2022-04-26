@@ -4,9 +4,9 @@ import type { AllNews } from '../containers/Home'
 import { Home } from '../containers/Home'
 import { api, gql } from '../services/api'
 
-export const getStaticProps: GetStaticProps = async ({ preview }) => {
-  const { allNews } = await api<AllNews>(
-    gql`
+export const getStaticProps: GetStaticProps = async ctx => {
+  const { allNews } = await api<AllNews>({
+    query: gql`
       query ($preview: Boolean) {
         allNews(preview: $preview) {
           id
@@ -23,8 +23,10 @@ export const getStaticProps: GetStaticProps = async ({ preview }) => {
         }
       }
     `,
-    { preview }
-  )
+    variables: {
+      preview: ctx.preview || false
+    }
+  })
 
   return {
     props: { allNews },
