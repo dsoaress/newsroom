@@ -1,4 +1,5 @@
 import { BadGatewayException, Injectable, NotFoundException } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { UploadClient } from '@uploadcare/upload-client'
 import { FileUpload } from 'graphql-upload'
 import { getPlaiceholder } from 'plaiceholder'
@@ -7,9 +8,14 @@ import { PrismaService } from '../../shared/services/prisma.service'
 
 @Injectable()
 export class ImagesService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly configService: ConfigService
+  ) {}
 
-  private uploadCareClient = new UploadClient({ publicKey: '042ec6fae3feba612eb3' })
+  private uploadCareClient = new UploadClient({
+    publicKey: this.configService.get('UPLOADCARE_PUBLIC_KEY')
+  })
 
   async create({ createReadStream, filename, mimetype }: FileUpload) {
     const stream = createReadStream()

@@ -1,3 +1,4 @@
+import { ConfigModule } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import { PrismaService } from '../../shared/services/prisma.service'
@@ -9,7 +10,8 @@ describe('ImagesResolver', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ImagesResolver, ImagesService, PrismaService]
+      providers: [ImagesResolver, ImagesService, PrismaService],
+      imports: [ConfigModule]
     }).compile()
 
     resolver = module.get<ImagesResolver>(ImagesResolver)

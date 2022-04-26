@@ -1,3 +1,4 @@
+import { ConfigModule } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import { PrismaService } from '../../shared/services/prisma.service'
@@ -11,7 +12,8 @@ describe('NewsResolver', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [NewsResolver, NewsService, CategoriesService, ImagesService, PrismaService]
+      providers: [NewsResolver, NewsService, CategoriesService, ImagesService, PrismaService],
+      imports: [ConfigModule]
     }).compile()
 
     resolver = module.get<NewsResolver>(NewsResolver)
