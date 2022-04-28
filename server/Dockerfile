@@ -1,15 +1,21 @@
-FROM node:16
+FROM node:16 AS builder
+
 WORKDIR /app
 
-ARG PORT
-
 COPY package.json yarn.lock ./
+COPY prisma ./prisma/
 
-RUN export NODE_ENV=production
-RUN yarn
+RUN yarn install --frozen-lockfile
 
 COPY . .
+
 RUN yarn build
 
-EXPOSE $PORT
-CMD ["yarn", "start"]
+FROM node:16
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 3010
+CMD [ "yarn", "start" ]
