@@ -24,10 +24,10 @@ export class CategoriesService {
     return await this.prismaService.category.findMany()
   }
 
-  async findOne(id: string) {
-    const category = await this.prismaService.category.findUnique({ where: { id } })
+  async findOne(slug: string) {
+    const category = await this.prismaService.category.findUnique({ where: { slug } })
 
-    if (!category) throw new NotFoundException(`Category with id ${id} not found`)
+    if (!category) throw new NotFoundException(`Category with slug ${slug} not found`)
 
     return category
   }

@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException
-} from '@nestjs/common'
+import { ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { GqlExecutionContext } from '@nestjs/graphql'
 import { AuthGuard } from '@nestjs/passport'
@@ -35,28 +30,10 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     const authHeader = req.headers.authorization as string
     const previewModeToken = req.headers.preview as string
-
     req.preview = this.sessionService.isPreviewMode(previewModeToken)
 
     if (isPublic && !authHeader) return true
-
-    if (!authHeader) {
-      throw new BadRequestException('Authorization header not found.')
-    }
-
-    const [type, accessToken] = authHeader.split(' ')
-
-    if (type !== 'Bearer') {
-      throw new BadRequestException(`Authentication type 'Bearer' required. Found '${type}'`)
-    }
-
-    const { isValid, user } = await this.sessionService.validateAccessToken(accessToken)
-
-    if (!isValid) {
-      throw new UnauthorizedException('Token not valid')
-    }
-
-    req.user = user
+    req.user = await this.sessionService.validateAccessToken(authHeader)
 
     return true
   }

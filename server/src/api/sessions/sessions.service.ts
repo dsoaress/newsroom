@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import { compareSync } from 'bcrypt'
@@ -55,12 +55,23 @@ export class SessionsService {
     return await this.createSession(user)
   }
 
-  async validateAccessToken(accessToken: string) {
-    const { sub } = this.jwtService.verify(accessToken) as { sub: string }
-    const user = await this.usersService.findOne(sub)
+  async validateAccessToken(authHeader: string) {
+    if (!authHeader) {
+      throw new BadRequestException('Authorization header not found')
+    }
 
-    if (!user) return { isValid: false }
-    return { user, isValid: true }
+    const [, accessToken] = authHeader.split(' ')
+
+    if (!accessToken) {
+      throw new BadRequestException('Authorization header not found')
+    }
+
+    try {
+      const { sub } = this.jwtService.verify(accessToken) as { sub: string }
+      return await this.usersService.findOne(sub)
+    } catch {
+      throw new UnauthorizedException('Invalid credentials')
+    }
   }
 
   isPreviewMode(tokenToCompare?: string) {

@@ -52,15 +52,15 @@ export class NewsService {
     })
   }
 
-  async findOne({ id, previewMode = false }: { id: string; previewMode?: boolean }) {
+  async findOne({ slug, previewMode = false }: { slug: string; previewMode?: boolean }) {
     const news = await this.prismaService.news.findUnique({
-      where: { id },
+      where: { slug },
       include: { category: true, image: true }
     })
 
-    if (!news) throw new NotFoundException(`News with id ${id} not found`)
+    if (!news) throw new NotFoundException(`News with slug ${slug} not found`)
     if (!previewMode && !news.published) {
-      throw new NotFoundException(`News with id ${id} not found`)
+      throw new NotFoundException(`News with slug ${slug} not found`)
     }
 
     return news

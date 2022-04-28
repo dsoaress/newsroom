@@ -20,8 +20,8 @@ export class CategoriesResolver {
   }
 
   @Query(() => Category, { name: 'category' })
-  findOne(@Args('id', { type: () => String }) id: string) {
-    return this.categoriesService.findOne(id)
+  findOne(@Args('slug', { type: () => String }) slug: string) {
+    return this.categoriesService.findOne(slug)
   }
 
   @Mutation(() => Category)

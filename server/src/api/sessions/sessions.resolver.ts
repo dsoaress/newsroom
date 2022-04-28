@@ -1,6 +1,8 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql'
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 
+import { CurrentUser } from '../../shared/decorators/current-user.decorator'
 import { Public } from '../../shared/decorators/public-route.decorator'
+import { User } from '../users/entities/user.entity'
 import { CreateSessionInput } from './dto/create-session.input'
 import { Session } from './entities/session.entity'
 import { SessionsService } from './sessions.service'
@@ -19,5 +21,10 @@ export class SessionsResolver {
   @Mutation(() => Session)
   updateSession(@Args('refreshToken') refreshToken: string) {
     return this.sessionsService.update(refreshToken)
+  }
+
+  @Query(() => User)
+  profile(@CurrentUser() currentUser: User) {
+    return currentUser
   }
 }

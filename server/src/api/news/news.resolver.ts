@@ -24,8 +24,11 @@ export class NewsResolver {
 
   @Public()
   @Query(() => News, { name: 'news' })
-  findOne(@Args('id', { type: () => String }) id: string, @PreviewMode() previewMode?: boolean) {
-    return this.newsService.findOne({ id, previewMode })
+  findOne(
+    @Args('slug', { type: () => String }) slug: string,
+    @PreviewMode() previewMode?: boolean
+  ) {
+    return this.newsService.findOne({ slug, previewMode })
   }
 
   @Mutation(() => News)

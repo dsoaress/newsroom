@@ -56,13 +56,14 @@ type Session {
 
 type Query {
   categories: [Category!]!
-  category(id: String!): Category!
+  category(slug: String!): Category!
   users: [User!]!
   user(id: String!): User
   allNews: [News!]!
-  news(id: String!): News!
+  news(slug: String!): News!
   images: [Image!]!
   image(id: String!): Image!
+  profile: User!
 }
 
 type Mutation {

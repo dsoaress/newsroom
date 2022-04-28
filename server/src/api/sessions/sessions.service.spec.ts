@@ -1,3 +1,4 @@
+import { ConfigModule } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -14,7 +15,8 @@ describe('SessionsService', () => {
         JwtModule.register({
           secret: 'secret',
           signOptions: { expiresIn: '15m' }
-        })
+        }),
+        ConfigModule
       ],
       providers: [SessionsService, UsersService, PrismaService]
     }).compile()

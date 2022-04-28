@@ -5,7 +5,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "prebuild": "rimraf dist",
+    "prebuild": "rimraf dist && prisma:seed",
     "build": "nest build",
     "dev": "nest start --watch",
     "start": "node dist/src/main",
