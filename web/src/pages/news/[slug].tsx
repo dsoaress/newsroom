@@ -1,10 +1,9 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 
-import { GET_ALL_NEWS } from '../../queries/getAllNews'
-import { GET_NEWS_BY_SLUG } from '../../queries/getNewsBySlug'
-import { ssrUrqlClient } from '../../services/urqlClient'
+import { graphqlClient } from '../../services/graphqlClient'
+import { GET_ALL_NEWS } from '../../services/queries/getAllNews'
+import { GET_NEWS_BY_SLUG } from '../../services/queries/getNewsBySlug'
 import { News } from '../../types/News'
 
 type NewsItemProps = {
@@ -23,12 +22,12 @@ export default function NewsItem({ news }: NewsItemProps) {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const data = await ssrUrqlClient<{ allNews: News[] }>({
+  const data = await graphqlClient<{ allNews: News[] }>({
     query: GET_ALL_NEWS
   })
 
-  const paths = data?.allNews.map(news => ({
-    params: { slug: news.slug }
+  const paths = data?.allNews.map(({ slug }) => ({
+    params: { slug }
   }))
 
   return {
@@ -38,7 +37,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps = async ({ params, previewData: previewToken }) => {
-  const data = await ssrUrqlClient<{ news: News }>({
+  const data = await graphqlClient<{ news: News }>({
     query: GET_NEWS_BY_SLUG,
     variables: { slug: params?.slug as string },
     previewToken

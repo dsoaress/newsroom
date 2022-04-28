@@ -1,20 +1,21 @@
 import { gql } from 'urql'
 
-export const GET_NEWS_BY_SLUG = gql`
-  query GetNewsById($slug: String!) {
-    news(slug: $slug) {
+export const GET_ALL_NEWS = gql`
+  query GetAllNews {
+    allNews {
       id
       title
       image {
         url
+        blurDataUrl
       }
       slug
       category {
         name
+        slug
       }
       date
       published
-      body
     }
   }
 `

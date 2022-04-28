@@ -3,10 +3,12 @@ export type News = {
   title: string
   image: {
     url: string
+    blurDataUrl: string
   } | null
   slug: string
   category: {
     name: string
+    slug: string
   }
   date: string
   published: boolean
