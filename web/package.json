@@ -11,12 +11,11 @@
     "lint": "next lint --fix"
   },
   "dependencies": {
-    "axios": "^0.27.1",
+    "graphql": "^16.4.0",
     "next": "12.1.5",
-    "nookies": "^2.5.2",
     "react": "18.0.0",
     "react-dom": "18.0.0",
-    "react-query": "3.38.0"
+    "urql": "^2.2.0"
   },
   "devDependencies": {
     "@types/node": "17.0.25",

@@ -1,14 +1,14 @@
-import type { AppProps } from 'next/app'
-import { QueryClient, QueryClientProvider } from 'react-query'
-import { ReactQueryDevtools } from 'react-query/devtools'
+import { AppProps } from 'next/app'
+import { Provider as UrqlProvider } from 'urql'
+
+import { PreviewModeBanner } from '../components/PreviewModeBanner'
+import { urqlClient } from '../services/urqlClient'
 
 export default function App({ Component, pageProps }: AppProps) {
-  const queryClient = new QueryClient()
-
   return (
-    <QueryClientProvider client={queryClient}>
+    <UrqlProvider value={urqlClient}>
+      <PreviewModeBanner />
       <Component {...pageProps} />
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    </UrqlProvider>
   )
 }

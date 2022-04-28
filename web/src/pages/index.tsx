@@ -1,64 +1,46 @@
-import type { GetStaticProps } from 'next'
+import { GetStaticProps } from 'next'
+import Link from 'next/link'
 
-import { api, gql } from '../services/api'
-
-type AllNews = {
-  allNews: {
-    id: string
-    title: string
-    image: {
-      url: string
-    } | null
-    slug: string
-    category: {
-      name: string
-    }
-    date: string
-    published: boolean
-  }[]
-}
+import { GET_ALL_NEWS } from '../queries/getAllNews'
+import { ssrUrqlClient } from '../services/urqlClient'
+import { AllNews } from '../types/AllNews'
 
 type HomeProps = {
   allNews: AllNews
-  preview: boolean
 }
 
-export default function Home({ allNews, preview }: HomeProps) {
-  console.log(allNews)
-  console.log(preview)
-
+export default function Home({ allNews }: HomeProps) {
   return (
     <div>
       <h1>Hello</h1>
+
+      <ul>
+        {allNews.map(news => (
+          <li key={news.id}>
+            <Link href={`/news/${news.slug}`}>
+              <a>
+                <h2>{news.title}</h2>
+              </a>
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
 
-export const getStaticProps: GetStaticProps = async ({ preview, previewData: previewToken }) => {
-  const { allNews } = await api<AllNews>({
-    query: gql`
-      query {
-        allNews {
-          id
-          title
-          image {
-            url
-          }
-          slug
-          category {
-            name
-          }
-          date
-          published
-        }
-      }
-    `,
-    preview,
+export const getStaticProps: GetStaticProps = async ({ previewData: previewToken }) => {
+  const data = await ssrUrqlClient<{ allNews: AllNews }>({
+    query: GET_ALL_NEWS,
     previewToken
   })
 
+  console.log(data, previewToken)
+
   return {
-    props: { allNews, preview: !!preview },
+    props: {
+      allNews: data?.allNews || []
+    },
     revalidate: 1
   }
 }
