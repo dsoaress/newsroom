@@ -37,11 +37,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
-export const getStaticProps: GetStaticProps = async ({
-  params,
-  preview,
-  previewData: previewToken
-}) => {
+export const getStaticProps: GetStaticProps = async ({ params, previewData: previewToken }) => {
   const data = await ssrUrqlClient<{ news: News }>({
     query: GET_NEWS_BY_SLUG,
     variables: { slug: params?.slug as string },
@@ -51,9 +47,7 @@ export const getStaticProps: GetStaticProps = async ({
   return {
     notFound: !data?.news?.id,
     props: {
-      news: data?.news || {},
-      preview: !!preview
-    },
-    revalidate: 1
+      news: data?.news || {}
+    }
   }
 }

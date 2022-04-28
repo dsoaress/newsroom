@@ -35,12 +35,9 @@ export const getStaticProps: GetStaticProps = async ({ previewData: previewToken
     previewToken
   })
 
-  console.log(data, previewToken)
-
   return {
     props: {
       allNews: data?.allNews || []
-    },
-    revalidate: 1
+    }
   }
 }
