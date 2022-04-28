@@ -1,5 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 
+import { Public } from '../../shared/decorators/public-route.decorator'
 import { CategoriesService } from './categories.service'
 import { CreateCategoryInput } from './dto/create-category.input'
 import { UpdateCategoryInput } from './dto/update-category.input'
@@ -14,11 +15,13 @@ export class CategoriesResolver {
     return this.categoriesService.create(createCategoryInput)
   }
 
+  @Public()
   @Query(() => [Category], { name: 'categories' })
   findAll() {
     return this.categoriesService.findAll()
   }
 
+  @Public()
   @Query(() => Category, { name: 'category' })
   findOne(@Args('slug', { type: () => String }) slug: string) {
     return this.categoriesService.findOne(slug)

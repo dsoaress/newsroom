@@ -45,9 +45,8 @@ export class NewsService {
 
   async findAll(previewMode?: boolean) {
     return await this.prismaService.news.findMany({
-      where: {
-        published: !previewMode
-      },
+      where: { ...(!previewMode && { published: true }) },
+      orderBy: { date: 'desc' },
       include: { category: true, image: true }
     })
   }
