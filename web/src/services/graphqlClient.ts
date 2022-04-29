@@ -24,6 +24,6 @@ export const graphqlClient = async <T>({
     })
     .toPromise()
 
-  if (error) throw error
+  if (error) console.log(error.message)
   return data
 }
