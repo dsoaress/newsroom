@@ -13,14 +13,18 @@
     "graphql:codegen": "graphql-codegen --config codegen.yml && yarn lint"
   },
   "dependencies": {
+    "@radix-ui/colors": "0.1.8",
     "@stitches/react": "1.2.8",
+    "fetch-cookie": "2.0.3",
     "graphql": "16.4.0",
     "graphql-request": "4.2.0",
     "next": "12.1.5",
+    "node-fetch": "3.2.4",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-query": "3.38.0",
-    "sharp": "0.30.4"
+    "sharp": "0.30.4",
+    "zustand": "4.0.0-rc.1"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "2.6.2",

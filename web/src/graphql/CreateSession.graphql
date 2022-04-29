@@ -1,0 +1,12 @@
+mutation CreateSession($createSessionInput: CreateSessionInput!) {
+  createSession(createSessionInput: $createSessionInput) {
+    user {
+      id
+      name
+      email
+      role
+    }
+    accessToken
+    refreshToken
+  }
+}

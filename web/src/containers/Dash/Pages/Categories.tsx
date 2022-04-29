@@ -1,9 +1,9 @@
 import { Layout } from '../components/Layout'
 
-export function Dash() {
+export function Categories() {
   return (
     <Layout>
-      <h1>Dash</h1>
+      <h1>Categories</h1>
     </Layout>
   )
 }

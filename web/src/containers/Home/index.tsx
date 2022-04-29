@@ -22,6 +22,10 @@ export function Home(props: HomeProps) {
     <div>
       <h1>Hello {allNews?.length}</h1>
 
+      <Link href="/dash">
+        <a>Dash</a>
+      </Link>
+
       <ul>
         {allNews?.map(news => (
           <li key={news.id}>

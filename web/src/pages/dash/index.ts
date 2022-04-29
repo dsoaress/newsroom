@@ -1,3 +1,4 @@
 import { Dash } from '../../containers'
+import { permissionWrapper } from '../../utils/permissionWrapper'
 
-export default Dash
+export default permissionWrapper(Dash, ['ADMIN', 'EDITOR'])

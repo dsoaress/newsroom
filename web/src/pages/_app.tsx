@@ -3,7 +3,7 @@ import { QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 
 import { PreviewModeBanner } from '../components/PreviewModeBanner'
-import { queryClient } from '../services/queryClient'
+import { queryClient } from '../services/reactQueryClient'
 import { globalStyles } from '../styles'
 
 export default function App({ Component, pageProps }: AppProps) {

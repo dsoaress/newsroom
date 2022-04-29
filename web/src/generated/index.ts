@@ -254,6 +254,20 @@ export type CreateNewsMutation = {
   }
 }
 
+export type CreateSessionMutationVariables = Exact<{
+  createSessionInput: CreateSessionInput
+}>
+
+export type CreateSessionMutation = {
+  __typename?: 'Mutation'
+  createSession: {
+    __typename?: 'Session'
+    accessToken: string
+    refreshToken: string
+    user: { __typename?: 'User'; id: string; name: string; email: string; role: string }
+  }
+}
+
 export type GetAllCategoriesQueryVariables = Exact<{ [key: string]: never }>
 
 export type GetAllCategoriesQuery = {
@@ -281,6 +295,13 @@ export type GetAllNewsQuery = {
     image?: { __typename?: 'Image'; url: string; blurDataUrl: string } | null
     category: { __typename?: 'Category'; name: string; slug: string }
   }>
+}
+
+export type GetAllUsersQueryVariables = Exact<{ [key: string]: never }>
+
+export type GetAllUsersQuery = {
+  __typename?: 'Query'
+  users: Array<{ __typename?: 'User'; id: string; name: string; email: string; role: string }>
 }
 
 export type GetCategoryBySlugQueryVariables = Exact<{
@@ -326,6 +347,22 @@ export type GetNewsBySlugQuery = {
   }
 }
 
+export type GetProfileQueryVariables = Exact<{ [key: string]: never }>
+
+export type GetProfileQuery = {
+  __typename?: 'Query'
+  profile: { __typename?: 'User'; id: string; name: string; email: string; role: string }
+}
+
+export type GetUserByIdQueryVariables = Exact<{
+  id: Scalars['String']
+}>
+
+export type GetUserByIdQuery = {
+  __typename?: 'Query'
+  user?: { __typename?: 'User'; id: string; name: string; email: string; role: string } | null
+}
+
 export const CreateNewsDocument = `
     mutation CreateNews($createNewsInput: CreateNewsInput!) {
   createNews(createNewsInput: $createNewsInput) {
@@ -358,6 +395,41 @@ export const useCreateNewsMutation = <TError = unknown, TContext = unknown>(
       fetcher<CreateNewsMutation, CreateNewsMutationVariables>(
         client,
         CreateNewsDocument,
+        variables,
+        headers
+      )(),
+    options
+  )
+export const CreateSessionDocument = `
+    mutation CreateSession($createSessionInput: CreateSessionInput!) {
+  createSession(createSessionInput: $createSessionInput) {
+    user {
+      id
+      name
+      email
+      role
+    }
+    accessToken
+    refreshToken
+  }
+}
+    `
+export const useCreateSessionMutation = <TError = unknown, TContext = unknown>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<
+    CreateSessionMutation,
+    TError,
+    CreateSessionMutationVariables,
+    TContext
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<CreateSessionMutation, TError, CreateSessionMutationVariables, TContext>(
+    ['CreateSession'],
+    (variables?: CreateSessionMutationVariables) =>
+      fetcher<CreateSessionMutation, CreateSessionMutationVariables>(
+        client,
+        CreateSessionDocument,
         variables,
         headers
       )(),
@@ -419,6 +491,32 @@ export const useGetAllNewsQuery = <TData = GetAllNewsQuery, TError = unknown>(
     fetcher<GetAllNewsQuery, GetAllNewsQueryVariables>(
       client,
       GetAllNewsDocument,
+      variables,
+      headers
+    ),
+    options
+  )
+export const GetAllUsersDocument = `
+    query GetAllUsers {
+  users {
+    id
+    name
+    email
+    role
+  }
+}
+    `
+export const useGetAllUsersQuery = <TData = GetAllUsersQuery, TError = unknown>(
+  client: GraphQLClient,
+  variables?: GetAllUsersQueryVariables,
+  options?: UseQueryOptions<GetAllUsersQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<GetAllUsersQuery, TError, TData>(
+    variables === undefined ? ['GetAllUsers'] : ['GetAllUsers', variables],
+    fetcher<GetAllUsersQuery, GetAllUsersQueryVariables>(
+      client,
+      GetAllUsersDocument,
       variables,
       headers
     ),
@@ -492,6 +590,58 @@ export const useGetNewsBySlugQuery = <TData = GetNewsBySlugQuery, TError = unkno
     fetcher<GetNewsBySlugQuery, GetNewsBySlugQueryVariables>(
       client,
       GetNewsBySlugDocument,
+      variables,
+      headers
+    ),
+    options
+  )
+export const GetProfileDocument = `
+    query GetProfile {
+  profile {
+    id
+    name
+    email
+    role
+  }
+}
+    `
+export const useGetProfileQuery = <TData = GetProfileQuery, TError = unknown>(
+  client: GraphQLClient,
+  variables?: GetProfileQueryVariables,
+  options?: UseQueryOptions<GetProfileQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<GetProfileQuery, TError, TData>(
+    variables === undefined ? ['GetProfile'] : ['GetProfile', variables],
+    fetcher<GetProfileQuery, GetProfileQueryVariables>(
+      client,
+      GetProfileDocument,
+      variables,
+      headers
+    ),
+    options
+  )
+export const GetUserByIdDocument = `
+    query GetUserById($id: String!) {
+  user(id: $id) {
+    id
+    name
+    email
+    role
+  }
+}
+    `
+export const useGetUserByIdQuery = <TData = GetUserByIdQuery, TError = unknown>(
+  client: GraphQLClient,
+  variables: GetUserByIdQueryVariables,
+  options?: UseQueryOptions<GetUserByIdQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<GetUserByIdQuery, TError, TData>(
+    ['GetUserById', variables],
+    fetcher<GetUserByIdQuery, GetUserByIdQueryVariables>(
+      client,
+      GetUserByIdDocument,
       variables,
       headers
     ),

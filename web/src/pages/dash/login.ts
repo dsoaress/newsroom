@@ -1,3 +1,4 @@
 import { Login } from '../../containers'
+import { permissionWrapper } from '../../utils/permissionWrapper'
 
-export default Login
+export default permissionWrapper(Login, 'guest')
