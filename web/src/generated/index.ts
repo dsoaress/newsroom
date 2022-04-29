@@ -1,6 +1,6 @@
 import { GraphQLClient } from 'graphql-request'
 import { RequestInit } from 'graphql-request/dist/types.dom'
-import { useQuery, UseQueryOptions } from 'react-query'
+import { useMutation, UseMutationOptions, useQuery, UseQueryOptions } from 'react-query'
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
@@ -234,6 +234,26 @@ export type User = {
   updatedAt: Scalars['DateTime']
 }
 
+export type CreateNewsMutationVariables = Exact<{
+  createNewsInput: CreateNewsInput
+}>
+
+export type CreateNewsMutation = {
+  __typename?: 'Mutation'
+  createNews: {
+    __typename?: 'News'
+    id: string
+    title: string
+    description: string
+    slug: string
+    date: any
+    published: boolean
+    body: string
+    image?: { __typename?: 'Image'; url: string; blurDataUrl: string } | null
+    category: { __typename?: 'Category'; name: string; slug: string }
+  }
+}
+
 export type GetAllCategoriesQueryVariables = Exact<{ [key: string]: never }>
 
 export type GetAllCategoriesQuery = {
@@ -306,6 +326,43 @@ export type GetNewsBySlugQuery = {
   }
 }
 
+export const CreateNewsDocument = `
+    mutation CreateNews($createNewsInput: CreateNewsInput!) {
+  createNews(createNewsInput: $createNewsInput) {
+    id
+    title
+    description
+    image {
+      url
+      blurDataUrl
+    }
+    slug
+    category {
+      name
+      slug
+    }
+    date
+    published
+    body
+  }
+}
+    `
+export const useCreateNewsMutation = <TError = unknown, TContext = unknown>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<CreateNewsMutation, TError, CreateNewsMutationVariables, TContext>,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<CreateNewsMutation, TError, CreateNewsMutationVariables, TContext>(
+    ['CreateNews'],
+    (variables?: CreateNewsMutationVariables) =>
+      fetcher<CreateNewsMutation, CreateNewsMutationVariables>(
+        client,
+        CreateNewsDocument,
+        variables,
+        headers
+      )(),
+    options
+  )
 export const GetAllCategoriesDocument = `
     query GetAllCategories {
   categories {

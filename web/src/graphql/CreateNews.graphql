@@ -1,0 +1,19 @@
+mutation CreateNews($createNewsInput: CreateNewsInput!) {
+  createNews(createNewsInput: $createNewsInput) {
+    id
+    title
+    description
+    image {
+      url
+      blurDataUrl
+    }
+    slug
+    category {
+      name
+      slug
+    }
+    date
+    published
+    body
+  }
+}

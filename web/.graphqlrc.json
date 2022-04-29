@@ -1,0 +1,4 @@
+{
+  "schema": "https://newsroom-production.up.railway.app/graphql",
+  "documents": ["src/**/*.graphql"]
+}
