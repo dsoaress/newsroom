@@ -1,0 +1,17 @@
+query GetAllNews {
+  allNews {
+    id
+    title
+    image {
+      url
+      blurDataUrl
+    }
+    slug
+    category {
+      name
+      slug
+    }
+    date
+    published
+  }
+}

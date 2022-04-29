@@ -1,0 +1,14 @@
+overwrite: true
+schema: "https://newsroom-production.up.railway.app/graphql"
+documents: "src/**/*.graphql"
+generates:
+  src/generated/index.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-query"
+    config:
+      fetcher: "graphql-request"
+  ./graphql.schema.json:
+    plugins:
+      - "introspection"

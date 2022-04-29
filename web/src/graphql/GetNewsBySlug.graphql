@@ -1,0 +1,18 @@
+query GetNewsBySlug($slug: String!) {
+  news(slug: $slug) {
+    id
+    title
+    image {
+      url
+      blurDataUrl
+    }
+    slug
+    category {
+      name
+      slug
+    }
+    date
+    published
+    body
+  }
+}

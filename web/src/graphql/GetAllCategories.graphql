@@ -1,0 +1,8 @@
+query GetAllCategories {
+  categories {
+    id
+    name
+    description
+    slug
+  }
+}

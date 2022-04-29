@@ -4,6 +4,9 @@ const nextConfig = {
   images: {
     domains: ['ucarecdn.com']
   },
+  eslint: {
+    dirs: ['src']
+  },
   async rewrites() {
     return [
       { source: '/categories', destination: '/' },
