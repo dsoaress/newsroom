@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
 
 import { Public } from '../../shared/decorators/public-route.decorator'
 import { CategoriesService } from './categories.service'
@@ -17,8 +17,12 @@ export class CategoriesResolver {
 
   @Public()
   @Query(() => [Category], { name: 'categories' })
-  findAll() {
-    return this.categoriesService.findAll()
+  findAll(
+    @Args('search', { nullable: true }) search: string,
+    @Args('skip', { type: () => Int, nullable: true }) skip: number,
+    @Args('take', { type: () => Int, nullable: true }) take: number
+  ) {
+    return this.categoriesService.findAll({ skip, take, search })
   }
 
   @Public()

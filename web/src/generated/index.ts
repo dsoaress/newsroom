@@ -33,7 +33,6 @@ export type Category = {
   createdAt: Scalars['DateTime']
   description: Scalars['String']
   id: Scalars['ID']
-  image?: Maybe<Image>
   name: Scalars['String']
   news: Array<News>
   slug: Scalars['String']
@@ -174,6 +173,19 @@ export type Query = {
   users: Array<User>
 }
 
+export type QueryAllNewsArgs = {
+  preview?: InputMaybe<Scalars['Boolean']>
+  search?: InputMaybe<Scalars['String']>
+  skip?: InputMaybe<Scalars['Int']>
+  take?: InputMaybe<Scalars['Int']>
+}
+
+export type QueryCategoriesArgs = {
+  search?: InputMaybe<Scalars['String']>
+  skip?: InputMaybe<Scalars['Int']>
+  take?: InputMaybe<Scalars['Int']>
+}
+
 export type QueryCategoryArgs = {
   slug: Scalars['String']
 }
@@ -183,11 +195,17 @@ export type QueryImageArgs = {
 }
 
 export type QueryNewsArgs = {
+  preview?: InputMaybe<Scalars['Boolean']>
   slug: Scalars['String']
 }
 
 export type QueryUserArgs = {
   id: Scalars['String']
+}
+
+export enum Role {
+  Admin = 'ADMIN',
+  Editor = 'EDITOR'
 }
 
 export type Session = {
@@ -230,7 +248,7 @@ export type User = {
   email: Scalars['String']
   id: Scalars['ID']
   name: Scalars['String']
-  role: Scalars['String']
+  role: Role
   updatedAt: Scalars['DateTime']
 }
 
@@ -264,11 +282,15 @@ export type CreateSessionMutation = {
     __typename?: 'Session'
     accessToken: string
     refreshToken: string
-    user: { __typename?: 'User'; id: string; name: string; email: string; role: string }
+    user: { __typename?: 'User'; id: string; name: string; email: string; role: Role }
   }
 }
 
-export type GetAllCategoriesQueryVariables = Exact<{ [key: string]: never }>
+export type GetAllCategoriesQueryVariables = Exact<{
+  take?: InputMaybe<Scalars['Int']>
+  skip?: InputMaybe<Scalars['Int']>
+  search?: InputMaybe<Scalars['String']>
+}>
 
 export type GetAllCategoriesQuery = {
   __typename?: 'Query'
@@ -281,7 +303,12 @@ export type GetAllCategoriesQuery = {
   }>
 }
 
-export type GetAllNewsQueryVariables = Exact<{ [key: string]: never }>
+export type GetAllNewsQueryVariables = Exact<{
+  preview?: InputMaybe<Scalars['Boolean']>
+  take?: InputMaybe<Scalars['Int']>
+  skip?: InputMaybe<Scalars['Int']>
+  search?: InputMaybe<Scalars['String']>
+}>
 
 export type GetAllNewsQuery = {
   __typename?: 'Query'
@@ -301,7 +328,7 @@ export type GetAllUsersQueryVariables = Exact<{ [key: string]: never }>
 
 export type GetAllUsersQuery = {
   __typename?: 'Query'
-  users: Array<{ __typename?: 'User'; id: string; name: string; email: string; role: string }>
+  users: Array<{ __typename?: 'User'; id: string; name: string; email: string; role: Role }>
 }
 
 export type GetCategoryBySlugQueryVariables = Exact<{
@@ -329,6 +356,7 @@ export type GetCategoryBySlugQuery = {
 }
 
 export type GetNewsBySlugQueryVariables = Exact<{
+  preview?: InputMaybe<Scalars['Boolean']>
   slug: Scalars['String']
 }>
 
@@ -351,7 +379,7 @@ export type GetProfileQueryVariables = Exact<{ [key: string]: never }>
 
 export type GetProfileQuery = {
   __typename?: 'Query'
-  profile: { __typename?: 'User'; id: string; name: string; email: string; role: string }
+  profile: { __typename?: 'User'; id: string; name: string; email: string; role: Role }
 }
 
 export type GetUserByIdQueryVariables = Exact<{
@@ -360,7 +388,7 @@ export type GetUserByIdQueryVariables = Exact<{
 
 export type GetUserByIdQuery = {
   __typename?: 'Query'
-  user?: { __typename?: 'User'; id: string; name: string; email: string; role: string } | null
+  user?: { __typename?: 'User'; id: string; name: string; email: string; role: Role } | null
 }
 
 export const CreateNewsDocument = `
@@ -436,8 +464,8 @@ export const useCreateSessionMutation = <TError = unknown, TContext = unknown>(
     options
   )
 export const GetAllCategoriesDocument = `
-    query GetAllCategories {
-  categories {
+    query GetAllCategories($take: Int, $skip: Int, $search: String) {
+  categories(take: $take, skip: $skip, search: $search) {
     id
     name
     description
@@ -462,8 +490,8 @@ export const useGetAllCategoriesQuery = <TData = GetAllCategoriesQuery, TError =
     options
   )
 export const GetAllNewsDocument = `
-    query GetAllNews {
-  allNews {
+    query GetAllNews($preview: Boolean, $take: Int, $skip: Int, $search: String) {
+  allNews(preview: $preview, take: $take, skip: $skip, search: $search) {
     id
     title
     image {
@@ -560,8 +588,8 @@ export const useGetCategoryBySlugQuery = <TData = GetCategoryBySlugQuery, TError
     options
   )
 export const GetNewsBySlugDocument = `
-    query GetNewsBySlug($slug: String!) {
-  news(slug: $slug) {
+    query GetNewsBySlug($preview: Boolean, $slug: String!) {
+  news(preview: $preview, slug: $slug) {
     id
     title
     image {

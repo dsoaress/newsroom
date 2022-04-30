@@ -5,8 +5,43 @@ import { PrismaClient } from '@prisma/client'
 import { UploadClient } from '@uploadcare/upload-client'
 import { hashSync } from 'bcrypt'
 import { getPlaiceholder } from 'plaiceholder'
+import slugify from 'slugify'
 
 const prisma = new PrismaClient()
+
+export async function getCategoryData() {
+  const categoryName = faker.lorem.sentence(faker.datatype.number({ min: 1, max: 2 })).slice(0, -1)
+  const categorySlug = slugify(categoryName, { lower: true })
+
+  const newsOneTitle = faker.lorem.sentence().slice(0, -1)
+  const newsOneSlug = slugify(newsOneTitle, { lower: true })
+
+  const newsTwoTitle = faker.lorem.sentence().slice(0, -1)
+  const newsTwoSlug = slugify(newsTwoTitle, { lower: true })
+
+  const categorySlugExists = await prisma.category.findUnique({
+    where: { slug: categorySlug }
+  })
+
+  const newsOneSlugExists = await prisma.news.findUnique({
+    where: { slug: newsOneSlug }
+  })
+
+  const newsTwoSlugExists = await prisma.news.findUnique({
+    where: { slug: newsTwoSlug }
+  })
+
+  if (categorySlugExists || newsOneSlugExists || newsTwoSlugExists) return null
+
+  return {
+    categoryName,
+    categorySlug,
+    newsOneTitle,
+    newsOneSlug,
+    newsTwoTitle,
+    newsTwoSlug
+  }
+}
 
 export async function getImage() {
   console.log('Uploading image...')
@@ -48,35 +83,35 @@ async function main() {
   }
 
   if (categoriesCount < 1) {
-    for (let i = 1; i <= 40; i++) {
-      const categorySlug = faker.internet.domainWord()
-      const newsSlug = faker.internet.domainWord()
+    for (let i = 1; i <= 12; i++) {
+      const { categoryName, categorySlug, newsOneSlug, newsOneTitle, newsTwoSlug, newsTwoTitle } =
+        await getCategoryData()
 
-      const categorySlugExists = await prisma.category.findUnique({
-        where: { slug: categorySlug }
-      })
-
-      const newsSlugExists = await prisma.news.findUnique({
-        where: { slug: newsSlug }
-      })
-
-      if (categorySlugExists || newsSlugExists) return null
-
-      console.log(`${i}/${40}`)
+      console.log(`${i}/${12}`)
       console.log(`Creating category ${categorySlug}...`)
-      console.log(`Creating news ${newsSlug}...`)
 
       await prisma.category.create({
         data: {
-          name: faker.commerce.productName(),
+          name: categoryName,
           description: faker.lorem.sentence(),
           slug: categorySlug,
           news: {
             create: [
               {
-                title: faker.lorem.sentence(),
+                title: newsOneTitle,
                 description: faker.lorem.sentence(),
-                slug: newsSlug,
+                slug: newsOneSlug,
+                date: faker.date.past(),
+                published: faker.datatype.boolean(),
+                body: faker.lorem.paragraphs(15),
+                image: {
+                  create: await getImage()
+                }
+              },
+              {
+                title: newsTwoTitle,
+                description: faker.lorem.sentence(),
+                slug: newsTwoSlug,
                 date: faker.date.past(),
                 published: faker.datatype.boolean(),
                 body: faker.lorem.paragraphs(15),

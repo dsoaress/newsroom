@@ -20,9 +20,23 @@ export class CategoriesService {
     })
   }
 
-  async findAll() {
+  async findAll({ take, skip, search }: { take?: number; skip?: number; search?: string }) {
+    const or = search
+      ? {
+          OR: [
+            { name: { contains: search } },
+            { slug: { contains: search } },
+            { description: { contains: search } }
+          ]
+        }
+      : {}
+
     return await this.prismaService.category.findMany({
-      orderBy: { name: 'asc' }
+      where: { ...or },
+      orderBy: { name: 'asc' },
+      take: take || undefined,
+      skip: skip || undefined,
+      include: { news: { include: { image: true } } }
     })
   }
 

@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
 
 import { PreviewMode } from '../../shared/decorators/preview-mode.decorator'
 import { Public } from '../../shared/decorators/public-route.decorator'
@@ -18,17 +18,24 @@ export class NewsResolver {
 
   @Public()
   @Query(() => [News], { name: 'allNews' })
-  findAll(@PreviewMode() previewMode?: boolean) {
-    return this.newsService.findAll(previewMode)
+  findAll(
+    @Args('preview', { nullable: true }) preview?: boolean,
+    @Args('search', { nullable: true }) search?: string,
+    @Args('skip', { type: () => Int, nullable: true }) skip?: number,
+    @Args('take', { type: () => Int, nullable: true }) take?: number,
+    @PreviewMode() previewMode?: boolean
+  ) {
+    return this.newsService.findAll({ previewMode: preview && previewMode, skip, take, search })
   }
 
   @Public()
   @Query(() => News, { name: 'news' })
   findOne(
     @Args('slug', { type: () => String }) slug: string,
+    @Args('preview', { nullable: true }) preview?: boolean,
     @PreviewMode() previewMode?: boolean
   ) {
-    return this.newsService.findOne({ slug, previewMode })
+    return this.newsService.findOne({ slug, previewMode: preview && previewMode })
   }
 
   @Mutation(() => News)

@@ -43,10 +43,35 @@ export class NewsService {
     })
   }
 
-  async findAll(previewMode?: boolean) {
+  async findAll({
+    previewMode,
+    search,
+    skip,
+    take
+  }: {
+    previewMode?: boolean
+    take?: number
+    skip?: number
+    search?: string
+  }) {
+    const or = search
+      ? {
+          OR: [
+            { title: { contains: search } },
+            { description: { contains: search } },
+            { slug: { contains: search } },
+            { body: { contains: search } }
+          ]
+        }
+      : {}
+
+    const preview = previewMode ? {} : { published: true }
+
     return await this.prismaService.news.findMany({
-      where: { ...(!previewMode && { published: true }) },
+      where: { ...or, ...preview },
       orderBy: { date: 'desc' },
+      take: take || undefined,
+      skip: skip || undefined,
       include: { category: true, image: true }
     })
   }

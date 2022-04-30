@@ -1,9 +1,13 @@
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('ADMIN', 'EDITOR');
+
 -- CreateTable
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "role" "Role" NOT NULL DEFAULT E'EDITOR',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -42,6 +46,7 @@ CREATE TABLE "news" (
     "slug" TEXT NOT NULL,
     "category_id" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
+    "published" BOOLEAN NOT NULL DEFAULT false,
     "body" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -53,8 +58,8 @@ CREATE TABLE "news" (
 CREATE TABLE "images" (
     "id" TEXT NOT NULL,
     "url" TEXT NOT NULL,
+    "blur_data_url" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "images_pkey" PRIMARY KEY ("id")
 );
@@ -63,13 +68,16 @@ CREATE TABLE "images" (
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "categories_name_key" ON "categories"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "categories_slug_key" ON "categories"("slug");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "news_slug_key" ON "news"("slug");
+CREATE UNIQUE INDEX "news_image_id_key" ON "news"("image_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "news_image_id_key" ON "news"("image_id");
+CREATE UNIQUE INDEX "news_slug_key" ON "news"("slug");
 
 -- AddForeignKey
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

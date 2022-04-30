@@ -33,7 +33,7 @@ model Session {
 
 model Category {
   id          String   @id @default(cuid())
-  name        String
+  name        String   @unique
   description String
   slug        String   @unique
   news        News[]
@@ -47,7 +47,7 @@ model News {
   id          String   @id @default(cuid())
   title       String
   description String
-  imageId     String?  @map("image_id")@unique
+  imageId     String?  @unique @map("image_id")
   image       Image?   @relation(fields: [imageId], references: [id], onDelete: SetNull)
   slug        String   @unique
   categoryId  String   @map("category_id")

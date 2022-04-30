@@ -32,7 +32,6 @@ type Category {
   id: ID!
   name: String!
   description: String!
-  image: Image
   slug: String!
   news: [News!]!
   createdAt: DateTime!
@@ -43,9 +42,14 @@ type User {
   id: ID!
   name: String!
   email: String!
-  role: String!
+  role: Role!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+enum Role {
+  ADMIN
+  EDITOR
 }
 
 type Session {
@@ -55,12 +59,12 @@ type Session {
 }
 
 type Query {
-  categories: [Category!]!
+  categories(search: String, skip: Int, take: Int): [Category!]!
   category(slug: String!): Category!
   users: [User!]!
   user(id: String!): User
-  allNews: [News!]!
-  news(slug: String!): News!
+  allNews(preview: Boolean, search: String, skip: Int, take: Int): [News!]!
+  news(slug: String!, preview: Boolean): News!
   images: [Image!]!
   image(id: String!): Image!
   profile: User!

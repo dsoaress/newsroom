@@ -1,5 +1,5 @@
-query GetNewsBySlug($slug: String!) {
-  news(slug: $slug) {
+query GetNewsBySlug($preview: Boolean, $slug: String!) {
+  news(preview: $preview, slug: $slug) {
     id
     title
     image {
