@@ -1,6 +1,12 @@
-import { styled } from '../../styles'
+import { styled } from '@/styles'
 
 export const Wrapper = styled('div', {
+  position: 'sticky',
+  top: 0,
+  zIndex: 100
+})
+
+export const PreviewModeBanner = styled('div', {
   display: 'none',
   width: '100%',
   alignItems: 'center',
@@ -27,4 +33,21 @@ export const Button = styled('button', {
   cursor: 'pointer',
   padding: '0.5rem 1rem',
   marginLeft: '1rem'
+})
+
+export const Content = styled('header', {
+  height: '3rem',
+  backgroundColor: '$neutral1',
+  color: '$neutral12',
+  display: 'flex',
+  alignItems: 'center',
+  boxShadow: '$sm'
+})
+
+export const Title = styled('a', {
+  fontSize: '1.188rem',
+  fontWeight: 'bold',
+  cursor: 'pointer',
+  textDecoration: 'none',
+  color: '$neutral12'
 })

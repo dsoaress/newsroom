@@ -2,7 +2,6 @@ import { AppProps } from 'next/app'
 import { QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 
-import { PreviewModeBanner } from '../components/PreviewModeBanner'
 import { queryClient } from '../services/reactQueryClient'
 import { globalStyles } from '../styles'
 
@@ -11,7 +10,6 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <PreviewModeBanner />
       <Component {...pageProps} />
       <ReactQueryDevtools />
     </QueryClientProvider>

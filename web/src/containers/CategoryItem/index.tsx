@@ -1,7 +1,6 @@
-import Link from 'next/link'
-
-import { GetCategoryBySlugQuery, useGetCategoryBySlugQuery } from '../../generated'
-import { graphQLClient } from '../../services/graphQLClient'
+import { Layout } from '@/components/Layout'
+import { GetCategoryBySlugQuery, useGetCategoryBySlugQuery } from '@/generated'
+import { graphQLClient } from '@/services/graphQLClient'
 
 type CategoryItemProps = {
   slug: string
@@ -17,11 +16,8 @@ export function CategoryItem(props: CategoryItemProps) {
   const category = data?.category
 
   return (
-    <div>
-      <Link href="/">
-        <a>Home</a>
-      </Link>
+    <Layout>
       <h1>{category?.name}</h1>
-    </div>
+    </Layout>
   )
 }

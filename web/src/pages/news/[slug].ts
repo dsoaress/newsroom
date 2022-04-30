@@ -25,7 +25,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params, previewData: previewToken }) => {
   const data = await graphQLClient.request<GetNewsBySlugQuery>(
     GetNewsBySlugDocument,
-    { slug: params?.slug as string },
+    { slug: params?.slug as string, preview: !!previewToken },
     { preview: previewToken?.toString() || '' }
   )
 

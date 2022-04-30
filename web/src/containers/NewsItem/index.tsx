@@ -1,7 +1,6 @@
-import Link from 'next/link'
-
-import { GetNewsBySlugQuery, useGetNewsBySlugQuery } from '../../generated'
-import { graphQLClient } from '../../services/graphQLClient'
+import { Layout } from '@/components/Layout'
+import { GetNewsBySlugQuery, useGetNewsBySlugQuery } from '@/generated'
+import { graphQLClient } from '@/services/graphQLClient'
 
 type NewsItemProps = {
   slug: string
@@ -11,7 +10,7 @@ type NewsItemProps = {
 export function NewsItem(props: NewsItemProps) {
   const { data } = useGetNewsBySlugQuery(
     graphQLClient,
-    { slug: props.slug },
+    { slug: props.slug, preview: !!props.previewToken },
     { initialData: { news: props.news } },
     { preview: props.previewToken }
   )
@@ -19,11 +18,8 @@ export function NewsItem(props: NewsItemProps) {
   const news = data?.news
 
   return (
-    <div>
-      <Link href="/">
-        <a>Home</a>
-      </Link>
+    <Layout>
       <h1>{news?.title}</h1>
-    </div>
+    </Layout>
   )
 }

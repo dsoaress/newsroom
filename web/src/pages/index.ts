@@ -5,9 +5,11 @@ import { GetAllNewsDocument, GetAllNewsQuery } from '../generated'
 import { graphQLClient } from '../services/graphQLClient'
 
 export const getStaticProps: GetStaticProps = async ({ previewData: previewToken }) => {
-  const data = await graphQLClient.request<GetAllNewsQuery>(GetAllNewsDocument, undefined, {
-    preview: previewToken?.toString() || ''
-  })
+  const data = await graphQLClient.request<GetAllNewsQuery>(
+    GetAllNewsDocument,
+    { preview: !!previewToken },
+    { preview: previewToken?.toString() || '' }
+  )
 
   return {
     props: {

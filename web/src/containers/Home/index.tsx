@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
+import { Layout } from '../../components/Layout'
 import { GetAllNewsQuery, useGetAllNewsQuery } from '../../generated'
 import { graphQLClient } from '../../services/graphQLClient'
 
@@ -11,7 +12,7 @@ type HomeProps = {
 export function Home(props: HomeProps) {
   const { data } = useGetAllNewsQuery(
     graphQLClient,
-    undefined,
+    { preview: !!props.previewToken },
     { initialData: { allNews: props.allNews } },
     { preview: props.previewToken }
   )
@@ -19,9 +20,7 @@ export function Home(props: HomeProps) {
   const allNews = data?.allNews
 
   return (
-    <div>
-      <h1>Hello {allNews?.length}</h1>
-
+    <Layout>
       <Link href="/dash">
         <a>Dash</a>
       </Link>
@@ -57,6 +56,6 @@ export function Home(props: HomeProps) {
           </li>
         ))}
       </ul>
-    </div>
+    </Layout>
   )
 }
